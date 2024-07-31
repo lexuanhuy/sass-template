@@ -1,0 +1,106 @@
+$prefix: "";
+
+$step: 1;
+$multiplier: 0.25rem;
+$startStep: 0;
+$endStep: 100;
+
+$spacings: 
+  gap gap,
+  fz font-size,
+  p padding,
+  px (padding-left, padding-right),
+  py (padding-top, padding-left),
+  pt padding-top,
+  pr padding-right,
+  pb padding-bottom,
+  pl padding-left,
+  m margin,
+  mx (margin-left, margin-right),
+  my (margin-top, margin-left),
+  mt margin-top,
+  mr margin-right,
+  mb margin-bottom,
+  ml margin-left,
+;
+$breakpoints: (
+  "": "",
+  "xs": 576px,
+  "sm": 768px,
+  "md": 992px,
+  "lg": 1200px,
+  "xl": 1400px,
+);
+
+$display:
+  block,
+  inline,
+  inline-block,
+  flex,
+  inline-flex,
+  grid,
+  inline-grid,
+  none,
+  flow-root;
+
+$font-weight: lighter, normal, bold, bolder, 100, 200, 300, 400, 500, 600, 700, 800, 900;
+
+@function createPrefix($name, $_prefix: "") {
+  @if($_prefix == "") {
+    @return $name;
+  }
+  @else {
+    @return $_prefix+"-"+$name;
+  }
+}
+
+@function createSuffix($name, $_suffix: "") {
+  @if($_suffix == "") {
+    @return $name;
+  }
+  @else {
+    @return $name+"-"+$_suffix;
+  }
+}
+
+@function createClassName($_prefix, $classname, $breakpoint: "") {
+    @return createPrefix(createSuffix($classname, $breakpoint), $_prefix);
+}
+
+@mixin createSpacing($beakpoint) {
+  @each $key, $spacings-property in $spacings {
+    .#{createClassName($prefix, $key, $beakpoint)} {
+      @for $currentStep from $startStep through $endStep {
+        &-#{$currentStep * $step} {
+          @each $property in $spacings-property {
+            #{$property}: $currentStep * $multiplier;
+          }
+        }
+      }
+    }
+  }
+}
+
+@mixin createCSS($list, $property, $_prefix: "") {
+  @each $item in $list {
+    .#{createClassName($prefix, createPrefix($item, $_prefix))} {
+      #{$property}: $item;
+    }
+  }
+}
+
+// with break point
+@each $breakpoint, $breakpoint-size in $breakpoints {
+  @if($breakpoint-size == "") {
+    @include createSpacing($breakpoint);
+    @include createCSS($display, "display");
+    @include createCSS($font-weight, "font-weight", "fw");
+  }
+  @else {
+    @media (min-width: $breakpoint-size) {
+      @include createSpacing($breakpoint);
+      @include createCSS($display, "display");
+      @include createCSS($font-weight, "font-weight", "fw");
+    }
+  }
+}
