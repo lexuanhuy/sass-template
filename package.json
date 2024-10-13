@@ -10,8 +10,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sass": "sass --watch styles/global.scss dist/styles/global.css",
-    "sass-prod": "sass --no-source-map --style=compressed styles/global.scss dist/styles/global.css"
+    "sass-watch": "sass --watch styles/global.scss dist/styles/global.css",
+    "sass": "sass --no-source-map --style=compressed styles/global.scss dist/styles/global.css"
   },
   "keywords": [
     "sass"
